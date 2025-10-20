@@ -1,11 +1,18 @@
 import { NextResponse } from 'next/server'
-import { cohereTranslate } from '@/lib/cohere'
+import { googleTranslate } from '@/lib/googleTranslate'
 
 export async function POST(req: Request) {
   try {
-    const { text, target } = await req.json()
-    const translated = await cohereTranslate(text, target)
-    if (!translated) return NextResponse.json({ error: 'Cohere translation failed' }, { status: 500 })
+    const payload = await req.json().catch(() => ({})) as any
+    const text = typeof payload.text === 'string' ? payload.text : ''
+    const target = typeof payload.target === 'string' ? payload.target : ''
+    if (!text.trim()) {
+      return NextResponse.json({ error: 'Text is required.' }, { status: 400 })
+    }
+    if (!target.trim()) {
+      return NextResponse.json({ error: 'Target language is required.' }, { status: 400 })
+    }
+    const translated = await googleTranslate(text, target)
     return NextResponse.json({ translated })
   } catch (e: any) {
     return NextResponse.json({ error: e?.message || 'GenAI error' }, { status: 500 })

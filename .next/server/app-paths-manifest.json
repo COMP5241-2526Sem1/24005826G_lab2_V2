@@ -1,6 +1,7 @@
 {
   "/page": "app/page.js",
+  "/analytics/page": "app/analytics/page.js",
   "/notes/page": "app/notes/page.js",
   "/notes/new/page": "app/notes/new/page.js",
-  "/api/genai/expand/route": "app/api/genai/expand/route.js"
+  "/api/genai/translate/route": "app/api/genai/translate/route.js"
 }

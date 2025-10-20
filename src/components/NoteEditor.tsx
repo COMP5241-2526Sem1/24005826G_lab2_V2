@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { autoTags } from '@/lib/smartTagging'
 import { scheduleReminder } from '@/lib/reminders'
 import { MarketLookup } from './MarketLookup'
@@ -39,31 +39,11 @@ export function NoteEditor({ initial, onSave }: Props) {
     rec.start()
   }
 
-  async function summarize() {
-    setBusy(true)
-    try {
-      const res = await fetch('/api/genai/summarize', { method: 'POST', body: JSON.stringify({ text: content }) })
-      const raw = await res.text()
-      let data: any
-      try { data = JSON.parse(raw) } catch { alert('GenAI error: ' + raw); return }
-      if (data.summary) setContent(data.summary)
-      else if (data.error) alert(data.error)
-    } finally { setBusy(false) }
-  }
-
-  async function expand() {
-    setBusy(true)
-    try {
-      const res = await fetch('/api/genai/expand', { method: 'POST', body: JSON.stringify({ text: content }) })
-      const raw = await res.text()
-      let data: any
-      try { data = JSON.parse(raw) } catch { alert('GenAI error: ' + raw); return }
-      if (data.expanded) setContent(data.expanded)
-      else if (data.error) alert(data.error)
-    } finally { setBusy(false) }
-  }
-
   async function translate(target: string) {
+    if (!content.trim()) {
+      alert('Please enter some content to translate.')
+      return
+    }
     setBusy(true)
     try {
       const res = await fetch('/api/genai/translate', { method: 'POST', body: JSON.stringify({ text: content, target }) })
@@ -94,8 +74,6 @@ export function NoteEditor({ initial, onSave }: Props) {
       <MarketLookup onInsert={(text)=> setContent(c => c + text)} />
       <div className="flex gap-2 items-center text-sm">
         <button type="button" className="px-2 py-1 border rounded" onClick={startDictation}>Voice to text</button>
-        <button type="button" className="px-2 py-1 border rounded" onClick={summarize} disabled={busy}>Summarize</button>
-        <button type="button" className="px-2 py-1 border rounded" onClick={expand} disabled={busy}>Expand</button>
         <button type="button" className="px-2 py-1 border rounded" onClick={() => translate('es')} disabled={busy}>Translate → ES</button>
       </div>
       <label className="block text-sm">Reminder time

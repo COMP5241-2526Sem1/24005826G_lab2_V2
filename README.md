@@ -1,19 +1,33 @@
-# Notely — Next.js + Supabase Notes
+# Notely — Professional AI-Powered Note-Taking App
 
-A full-stack notetaking app with Supabase storage, smart tagging, reminders, voice-to-text, market data references, and GenAI features (summarize, expand, translate).
+A modern, full-stack note-taking application transformed from a basic CRUD app into a professional-grade platform with advanced features, beautiful UI, and robust AI integration. Built with Next.js 14, TypeScript, Supabase, and a custom multi-provider translation service.
 
-## Features
+## ✨ Features
 
-- Notes: create, edit, delete, list, and view
-- Supabase storage (PostgreSQL) with RLS for per-user notes
-- Smart tagging: auto-applies tags from content (stocks, crypto, urgent, tasks, etc.)
-- Reminders: browser notifications for time-sensitive notes
-- Voice-to-text: dictation via Web Speech API
-- Market data: lookup crypto (CoinGecko) or stock (Stooq) and insert price references
-- GenAI: summarize, expand, translate notes (uses OPENAI_API_KEY if provided; has graceful fallbacks)
-- Related notes: basic suggestions using keyword similarity
-- Analytics: counts and most active days
-- Responsive UI + Dark mode
+### Core Functionality
+- **Professional Note Management**: Create, edit, delete, and organize notes with advanced features
+- **Template System**: 8 professional templates (Meeting Notes, Project Planning, Daily Journal, etc.)
+- **Enhanced Editor**: Rich text editing with markdown support and AI integration
+- **Smart Organization**: Tags, search, filtering, and related notes suggestions
+
+### AI Integration
+- **Multi-Provider Translation**: Robust translation service with dictionary fallbacks
+- **Content Enhancement**: Summarization, expansion, and translation capabilities
+- **Smart Tagging**: Auto-applies tags from content (stocks, crypto, urgent, tasks, etc.)
+- **Voice-to-Text**: Dictation via Web Speech API
+
+### Modern UI/UX
+- **Professional Design**: Glassmorphism effects with Inter font typography
+- **Dark/Light Themes**: Comprehensive theme system with smooth transitions
+- **Responsive Design**: Mobile-first approach optimized for all devices
+- **Micro-interactions**: Smooth animations and hover effects
+
+### Advanced Features
+- **Auto-save**: Automatic saving with visual status indicators
+- **Reminders**: Browser notifications for time-sensitive notes
+- **Market Data**: Crypto (CoinGecko) and stock (Stooq) price references
+- **Analytics**: Usage statistics and activity tracking
+- **Delete Confirmation**: User-friendly delete operations with confirmation modals
 
 ## Tech stack
 

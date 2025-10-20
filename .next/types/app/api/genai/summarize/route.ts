@@ -1,8 +1,8 @@
-// File: /workspaces/24005826G_lab2_V2/src/app/api/genai/translate/route.ts
-import * as entry from '../../../../../../src/app/api/genai/translate/route.js'
+// File: /workspaces/24005826G_lab2_V2/src/app/api/genai/summarize/route.ts
+import * as entry from '../../../../../../src/app/api/genai/summarize/route.js'
 import type { NextRequest } from 'next/server.js'
 
-type TEntry = typeof import('../../../../../../src/app/api/genai/translate/route.js')
+type TEntry = typeof import('../../../../../../src/app/api/genai/summarize/route.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{

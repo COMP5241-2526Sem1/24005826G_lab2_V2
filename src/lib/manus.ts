@@ -215,45 +215,129 @@ function createFallbackSummary(text: string): string {
 function createFallbackExpansion(text: string): string {
   if (!text) return text
   
-  // For business/AI content, provide relevant expansions
-  const lowercaseText = text.toLowerCase()
-  let expansion = ''
+  // Clean and analyze the input text
+  const cleanText = text.trim()
+  const lowercaseText = cleanText.toLowerCase()
   
-  if (lowercaseText.includes('ai') && lowercaseText.includes('business')) {
-    expansion = `${text}
+  // For very short inputs, create meaningful expansions based on content
+  if (cleanText.length < 100) {
+    // Food-related content
+    if (lowercaseText.includes('apple') || lowercaseText.includes('fruit')) {
+      return `${cleanText}
 
-Artificial Intelligence has become a cornerstone of modern business strategy. Companies are leveraging AI technologies to automate processes, enhance customer experiences, and gain competitive advantages. From predictive analytics to chatbots, AI applications are transforming how businesses operate.
+Apples are one of the most popular and nutritious fruits worldwide. They come in many varieties, each with unique flavors, textures, and colors. From the crisp sweetness of Honeycrisp to the tart bite of Granny Smith, apples offer diverse taste experiences.
 
-Key areas where AI impacts business include:
-- Customer service automation
-- Data analysis and insights
-- Process optimization
-- Predictive maintenance
-- Marketing personalization
+Beyond their delicious taste, apples are packed with nutrients including fiber, vitamin C, and antioxidants. The saying "an apple a day keeps the doctor away" reflects their health benefits, which include supporting heart health, aiding digestion, and potentially reducing the risk of chronic diseases.
 
-The adoption of AI in business continues to grow as organizations recognize its potential to drive efficiency and innovation.`
-  } else if (lowercaseText.includes('ai') || lowercaseText.includes('artificial intelligence')) {
-    expansion = `${text}
+Apples are also incredibly versatile in cooking and baking, from simple snacks to elaborate desserts like apple pie, making them a beloved ingredient in cuisines around the world.`
+    }
+    
+    // Love/emotion-related content
+    else if (lowercaseText.includes('love') && !lowercaseText.includes('business')) {
+      return `${cleanText}
+
+Love is one of the most powerful and complex human emotions. It manifests in many forms - from romantic love between partners to the deep affection we feel for family, friends, or even simple pleasures in life.
+
+When we express love for something, whether it's a person, object, or experience, we're acknowledging its positive impact on our well-being and happiness. This appreciation can bring joy, comfort, and meaning to our daily lives.
+
+The things we love often reflect our values, memories, and personal connections. They become part of our identity and can provide emotional anchoring during challenging times.`
+    }
+    
+    // Technology-related content
+    else if (lowercaseText.includes('ai') || lowercaseText.includes('artificial intelligence') || lowercaseText.includes('technology')) {
+      return `${cleanText}
 
 Artificial Intelligence represents one of the most significant technological advances of our time. It encompasses machine learning, natural language processing, computer vision, and robotics. AI systems can learn from data, make decisions, and perform tasks that traditionally required human intelligence.
 
-The applications of AI span across numerous fields including healthcare, education, finance, transportation, and entertainment. As AI technology continues to evolve, it promises to reshape how we work, live, and interact with technology.`
-  } else if (lowercaseText.includes('business') || lowercaseText.includes('company')) {
-    expansion = `${text}
+The applications of AI span across numerous fields including healthcare, education, finance, transportation, and entertainment. As AI technology continues to evolve, it promises to reshape how we work, live, and interact with technology.
+
+Key areas of AI development include deep learning, neural networks, and automated decision-making systems that are transforming industries and creating new possibilities for innovation.`
+    }
+    
+    // Business-related content
+    else if (lowercaseText.includes('business') || lowercaseText.includes('company') || lowercaseText.includes('work')) {
+      return `${cleanText}
 
 In today's competitive marketplace, businesses must adapt to changing consumer demands and technological advancements. Successful companies focus on innovation, customer satisfaction, and operational efficiency.
 
-Key factors for business success include strategic planning, effective leadership, financial management, and the ability to adapt to market changes. Modern businesses also need to consider digital transformation, sustainability, and corporate social responsibility as essential components of their strategy.`
-  } else {
-    // Generic but meaningful expansion
-    expansion = `${text}
+Key factors for business success include strategic planning, effective leadership, financial management, and the ability to adapt to market changes. Modern businesses also need to consider digital transformation, sustainability, and corporate social responsibility as essential components of their strategy.
 
-This topic deserves deeper exploration and analysis. Understanding the various facets and implications can provide valuable insights for decision-making and future planning.
+The business landscape continues to evolve with emerging technologies, changing work patterns, and global economic shifts requiring organizations to remain agile and forward-thinking.`
+    }
+    
+    // Learning/education content
+    else if (lowercaseText.includes('learn') || lowercaseText.includes('study') || lowercaseText.includes('education')) {
+      return `${cleanText}
 
-Consider examining related concepts, potential challenges, and opportunities for growth or improvement. Additional research and expert perspectives could further enhance understanding of this subject matter.`
+Learning is a lifelong journey that enriches our understanding of the world and ourselves. Whether acquiring new skills, exploring academic subjects, or gaining practical knowledge, education opens doors to opportunities and personal growth.
+
+Effective learning involves various approaches including hands-on practice, theoretical study, collaboration with others, and reflection on experiences. Modern learning environments blend traditional methods with digital tools and resources.
+
+The key to successful learning is maintaining curiosity, setting clear goals, and being open to different perspectives and methodologies. Continuous learning helps us adapt to changing circumstances and remain engaged with our evolving world.`
+    }
+    
+    // Health/wellness content
+    else if (lowercaseText.includes('health') || lowercaseText.includes('wellness') || lowercaseText.includes('exercise')) {
+      return `${cleanText}
+
+Health and wellness encompass physical, mental, and emotional well-being. Maintaining good health requires a balanced approach including regular exercise, proper nutrition, adequate sleep, and stress management.
+
+Physical activity strengthens the body, improves cardiovascular health, and boosts mental well-being through the release of endorphins. A balanced diet provides essential nutrients that fuel our bodies and support optimal function.
+
+Mental wellness is equally important, involving practices like mindfulness, social connection, and pursuing activities that bring joy and fulfillment. Taking a holistic approach to health creates a foundation for a vibrant, productive life.`
+    }
+    
+    // Travel-related content
+    else if (lowercaseText.includes('travel') || lowercaseText.includes('trip') || lowercaseText.includes('vacation')) {
+      return `${cleanText}
+
+Travel broadens horizons and creates lasting memories through exposure to new cultures, environments, and experiences. Whether exploring distant countries or discovering hidden gems close to home, travel enriches our perspective and understanding of the world.
+
+Planning a trip involves considering destinations, accommodations, transportation, and activities that align with personal interests and budget. The journey itself often provides unexpected discoveries and connections with people and places.
+
+Travel experiences contribute to personal growth, cultural awareness, and appreciation for diversity. They create stories and memories that last a lifetime while fostering adaptability and confidence in navigating new situations.`
+    }
+    
+    // Generic meaningful expansion for other short content
+    else {
+      // Extract key concepts from the text
+      const words = cleanText.split(/\s+/).filter(w => w.length > 3)
+      const keyWord = words[0] || 'topic'
+      
+      return `${cleanText}
+
+This ${keyWord.toLowerCase()} represents an interesting subject worth exploring further. Understanding its various aspects can provide valuable insights and deeper appreciation for its significance.
+
+There are often multiple dimensions to consider - historical context, current relevance, and future implications. Each perspective can reveal new layers of meaning and understanding.
+
+Examining related concepts and their connections can enhance our overall comprehension and provide a more complete picture of the subject matter.`
+    }
   }
   
-  return expansion
+  // For longer text, provide more sophisticated expansion
+  else {
+    // Analyze content for key themes
+    if (lowercaseText.includes('ai') && lowercaseText.includes('business')) {
+      return `${cleanText}
+
+Artificial Intelligence has become a cornerstone of modern business strategy. Companies are leveraging AI technologies to automate processes, enhance customer experiences, and gain competitive advantages. From predictive analytics to chatbots, AI applications are transforming how businesses operate.
+
+Key areas where AI impacts business include customer service automation, data analysis and insights, process optimization, predictive maintenance, and marketing personalization. The adoption of AI in business continues to grow as organizations recognize its potential to drive efficiency and innovation.
+
+However, implementing AI in business also presents challenges including data privacy concerns, the need for skilled talent, and ensuring ethical AI practices. Successful AI adoption requires careful planning, stakeholder buy-in, and ongoing evaluation of results.`
+    }
+    
+    // Generic expansion for longer content
+    else {
+      return `${cleanText}
+
+This topic presents multiple facets that merit deeper exploration. Understanding the underlying principles and broader implications can provide valuable insights for decision-making and future planning.
+
+Consider examining the historical context, current trends, and potential future developments related to this subject. Analyzing different perspectives and approaches can reveal new opportunities and considerations.
+
+Additional research from expert sources, case studies, and real-world examples could further enhance understanding and provide practical applications of these concepts.`
+    }
+  }
 }
 
 function createFallbackImprovement(text: string): string {

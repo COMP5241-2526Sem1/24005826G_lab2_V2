@@ -1,4 +1,7 @@
 {
+  "/page": "app/page.js",
+  "/notes/page": "app/notes/page.js",
+  "/notes/[id]/page": "app/notes/[id]/page.js",
   "/notes/new/page": "app/notes/new/page.js",
-  "/api/genai/translate/route": "app/api/genai/translate/route.js"
+  "/_not-found/page": "app/_not-found/page.js"
 }

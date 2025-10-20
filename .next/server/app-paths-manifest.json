@@ -1,3 +1,4 @@
 {
-  "/notes/new/page": "app/notes/new/page.js"
+  "/notes/new/page": "app/notes/new/page.js",
+  "/api/genai/translate/route": "app/api/genai/translate/route.js"
 }

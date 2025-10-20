@@ -10,13 +10,20 @@ interface Message {
 interface Props {
   noteContent?: string
   onInsertContent?: (content: string) => void
+  // new/alternate prop names used by other components
+  currentContent?: string
+  onContentInsert?: (text: string) => void
+  onClose?: () => void
 }
 
-export function ManusAI({ noteContent, onInsertContent }: Props) {
+export function ManusAI({ noteContent, onInsertContent, currentContent, onContentInsert, onClose }: Props) {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
+  // If parent provided onClose/currentContent this component is being controlled
+  // by the parent (they render/unrender or expect the assistant to open). In
+  // that case, start open. Otherwise use internal open state.
+  const [isOpen, setIsOpen] = useState<boolean>(Boolean(onClose))
 
   async function sendMessage() {
     if (!input.trim() || isLoading) return
@@ -37,11 +44,13 @@ export function ManusAI({ noteContent, onInsertContent }: Props) {
         content: msg.content
       }))
 
-      // Add context about the current note if available
-      if (noteContent && noteContent.trim()) {
+      // Add context about the current note if available. Support both the
+      // legacy `noteContent` prop and the newer `currentContent` prop.
+      const contextContent = (currentContent ?? noteContent) || ''
+      if (contextContent.trim()) {
         chatMessages.unshift({
           role: 'user',
-          content: `Context: I'm working on a note with the following content:\n\n${noteContent}\n\nPlease help me with: ${input}`
+          content: `Context: I'm working on a note with the following content:\n\n${contextContent}\n\nPlease help me with: ${input}`
         })
       }
 
@@ -76,8 +85,10 @@ export function ManusAI({ noteContent, onInsertContent }: Props) {
   }
 
   function insertResponse(content: string) {
-    if (onInsertContent) {
-      onInsertContent(content)
+    // Support both prop names for insertion callback
+    const insertHandler = onContentInsert ?? onInsertContent
+    if (insertHandler) {
+      insertHandler(content)
     }
   }
 
@@ -85,7 +96,12 @@ export function ManusAI({ noteContent, onInsertContent }: Props) {
     return (
       <div className="fixed bottom-4 right-4 z-50">
         <button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            // If parent controls visibility via onClose prop, don't attempt to
+            // open internally — parent should mount/unmount this component.
+            if (onClose) return
+            setIsOpen(true)
+          }}
           className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
         >
           <span className="text-xl">🤖</span>
@@ -112,7 +128,15 @@ export function ManusAI({ noteContent, onInsertContent }: Props) {
             🗑️
           </button>
           <button
-            onClick={() => setIsOpen(false)}
+            onClick={() => {
+              // If a parent onClose handler is provided, call it so the parent
+              // can hide the assistant. Otherwise fall back to local state.
+              if (onClose) {
+                onClose()
+              } else {
+                setIsOpen(false)
+              }
+            }}
             className="text-white/80 hover:text-white text-lg px-2 py-1 rounded"
           >
             ×

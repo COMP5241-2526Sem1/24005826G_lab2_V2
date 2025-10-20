@@ -18,15 +18,9 @@ create index if not exists notes_user_id_idx on public.notes(user_id);
 create index if not exists notes_tags_gin on public.notes using gin(tags);
 create index if not exists notes_created_at_idx on public.notes(created_at desc);
 
--- RLS
-alter table public.notes enable row level security;
-do $$ begin
-  -- Postgres does not support CREATE POLICY IF NOT EXISTS, so create and ignore errors
-  CREATE POLICY "Users can manage their notes"
-    ON public.notes FOR ALL
-    USING (auth.uid() = user_id)
-    WITH CHECK (auth.uid() = user_id);
-exception when others then null; end $$;
+
+-- Disable RLS so all users can read/write notes
+alter table public.notes disable row level security;
 
 -- Trigger to update updated_at
 create or replace function public.set_updated_at()

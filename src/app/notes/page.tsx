@@ -2,20 +2,12 @@ import Link from 'next/link'
 import { supabaseServer } from '@/lib/supabaseServer'
 import { ReminderHydrator } from '@/components/ReminderHydrator'
 
+
 export default async function NotesPage({ searchParams }: { searchParams?: { q?: string; tag?: string } }) {
   const supabase = supabaseServer()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) {
-    return (
-      <div>
-        <h1 className="text-2xl font-semibold mb-2">Notes</h1>
-        <p>Please sign in via Supabase Auth to use notes.</p>
-      </div>
-    )
-  }
   const q = (searchParams?.q ?? '').trim()
   const tag = (searchParams?.tag ?? '').trim()
-  let query = supabase.from('notes').select('*').eq('user_id', user.id)
+  let query = supabase.from('notes').select('*')
   if (q) {
     // basic ilike match on title or content
     query = query.or(`title.ilike.%${q}%,content.ilike.%${q}%`)

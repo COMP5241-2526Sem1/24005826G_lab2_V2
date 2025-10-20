@@ -1,4 +1,4 @@
-import { supabaseServer } from '@/lib/supabaseServer'
+import { supabasePublic } from '@/lib/supabasePublic'
 import { NoteEditor } from '@/components/NoteEditor'
 import { redirect } from 'next/navigation'
 
@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 export default async function NewNotePage() {
   async function onSave(payload: { title: string; content: string; tags: string[]; reminder_at: string | null }) {
     'use server'
-    const supabase = supabaseServer()
+    const supabase = supabasePublic()
     const { data, error } = await supabase.from('notes').insert({
       title: payload.title,
       content: payload.content,

@@ -43,7 +43,9 @@ export function NoteEditor({ initial, onSave }: Props) {
     setBusy(true)
     try {
       const res = await fetch('/api/genai/summarize', { method: 'POST', body: JSON.stringify({ text: content }) })
-      const data = await res.json()
+      const raw = await res.text()
+      let data: any
+      try { data = JSON.parse(raw) } catch { alert('GenAI error: ' + raw); return }
       if (data.summary) setContent(data.summary)
       else if (data.error) alert(data.error)
     } finally { setBusy(false) }
@@ -53,7 +55,9 @@ export function NoteEditor({ initial, onSave }: Props) {
     setBusy(true)
     try {
       const res = await fetch('/api/genai/expand', { method: 'POST', body: JSON.stringify({ text: content }) })
-      const data = await res.json()
+      const raw = await res.text()
+      let data: any
+      try { data = JSON.parse(raw) } catch { alert('GenAI error: ' + raw); return }
       if (data.expanded) setContent(data.expanded)
       else if (data.error) alert(data.error)
     } finally { setBusy(false) }
@@ -63,7 +67,9 @@ export function NoteEditor({ initial, onSave }: Props) {
     setBusy(true)
     try {
       const res = await fetch('/api/genai/translate', { method: 'POST', body: JSON.stringify({ text: content, target }) })
-      const data = await res.json()
+      const raw = await res.text()
+      let data: any
+      try { data = JSON.parse(raw) } catch { alert('GenAI error: ' + raw); return }
       if (data.translated) setContent(data.translated)
       else if (data.error) alert(data.error)
     } finally { setBusy(false) }

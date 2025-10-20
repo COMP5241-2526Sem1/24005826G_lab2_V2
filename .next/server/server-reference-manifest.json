@@ -1,16 +1,14 @@
 {
   "node": {
-    "e7dbe4e0a9c6b168ab95033f70f63e20ed38ba24": {
+    "b343ef6da4ead3337c205738a01490d4e61e796b": {
       "workers": {
-        "app/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fworkspaces%2F24005826G_lab2_V2%2Fsrc%2Fcomponents%2FUserMenu.tsx%22%2C%5B%22%24%24ACTION_0%22%5D%5D%5D&__client_imported__=!",
-        "app/notes/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fworkspaces%2F24005826G_lab2_V2%2Fsrc%2Fcomponents%2FUserMenu.tsx%22%2C%5B%22%24%24ACTION_0%22%5D%5D%5D&__client_imported__=!"
+        "app/notes/new/page": "(rsc)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fworkspaces%2F24005826G_lab2_V2%2Fsrc%2Fapp%2Fnotes%2Fnew%2Fpage.tsx%22%2C%5B%22%24%24ACTION_0%22%5D%5D%5D&__client_imported__=!"
       },
       "layer": {
-        "app/page": "rsc",
-        "app/notes/page": "rsc"
+        "app/notes/new/page": "rsc"
       }
     }
   },
   "edge": {},
-  "encryptionKey": "f29TIhNVrB6n9E3QhO/fkKLH5bOXzVBadWKvbGopcl4="
+  "encryptionKey": "PRbSroJMOaV2k7hZxKehqg8Y69j4/ovqcgIDGp4uhbA="
 }

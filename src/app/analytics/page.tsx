@@ -1,11 +1,8 @@
-import { supabaseServer } from '@/lib/supabaseServer'
-import { redirect } from 'next/navigation'
+import { supabasePublic } from '@/lib/supabasePublic'
 
 export default async function AnalyticsPage() {
-  const supabase = supabaseServer()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth')
-  const { data: notes } = await supabase.from('notes').select('id, created_at, tags').eq('user_id', user.id)
+  const supabase = supabasePublic()
+  const { data: notes } = await supabase.from('notes').select('id, created_at, tags')
   const count = notes?.length ?? 0
   const dayCounts = new Map<string, number>()
   notes?.forEach(n => {

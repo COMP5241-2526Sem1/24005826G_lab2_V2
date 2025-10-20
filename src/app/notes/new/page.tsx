@@ -1,20 +1,12 @@
-import { supabasePublic } from '@/lib/supabasePublic'
-import { NoteEditor } from '@/components/NoteEditor'
 import { redirect } from 'next/navigation'
+import { NewNoteClient } from '@/components/NewNoteClient'
 
 
 export default async function NewNotePage() {
+  // We'll call the API from the client instead of using a server action
   async function onSave(payload: { title: string; content: string; tags: string[]; reminder_at: string | null }) {
     'use server'
-    const supabase = supabasePublic()
-    const { data, error } = await supabase.from('notes').insert({
-      title: payload.title,
-      content: payload.content,
-      tags: payload.tags,
-      reminder_at: payload.reminder_at,
-    }).select('id').single()
-    if (error) throw new Error(error.message)
-    redirect(`/notes/${data!.id}`)
+    // noop to satisfy typing; the real save happens client-side via NoteEditor
   }
 
   return (
@@ -22,7 +14,7 @@ export default async function NewNotePage() {
       <h1 className="text-2xl font-semibold">New Note</h1>
   {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
   {/* @ts-ignore Server Action passed as prop */}
-      <NoteEditor onSave={onSave} />
+      <NewNoteClient />
     </div>
   )
 }

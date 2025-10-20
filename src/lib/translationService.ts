@@ -123,6 +123,7 @@ async function tryLibreTranslate(text: string, targetLanguage: string): Promise<
     
     const targetCode = languageMap[targetLanguage] || targetLanguage.toLowerCase()
     
+    console.log(`Trying LibreTranslate translation to ${targetCode}...`)
     const response = await fetch('https://libretranslate.de/translate', {
       method: 'POST',
       headers: {
@@ -133,20 +134,30 @@ async function tryLibreTranslate(text: string, targetLanguage: string): Promise<
         source: 'en',
         target: targetCode,
         format: 'text'
-      })
-    })
+      }),
+      timeout: 15000 // 15 second timeout
+    } as any)
     
     if (response.ok) {
       const data = await response.json() as any
-      return {
-        success: true,
-        translatedText: data.translatedText || text,
-        provider: 'LibreTranslate'
+      console.log('LibreTranslate response:', data)
+      
+      if (data.translatedText && data.translatedText.trim()) {
+        const translatedText = data.translatedText.trim()
+        // Check if the translation is meaningful (not just returning the original text)
+        if (translatedText.toLowerCase() !== text.toLowerCase()) {
+          return {
+            success: true,
+            translatedText,
+            provider: 'LibreTranslate'
+          }
+        }
       }
     }
     
-    throw new Error(`LibreTranslate API error: ${response.status}`)
+    throw new Error(`LibreTranslate API error: ${response.status} ${response.statusText}`)
   } catch (error) {
+    console.log('LibreTranslate translation failed:', error)
     return {
       success: false,
       translatedText: text,
@@ -175,21 +186,31 @@ async function tryMyMemoryTranslate(text: string, targetLanguage: string): Promi
     const targetCode = languageMap[targetLanguage] || targetLanguage.toLowerCase()
     const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetCode}`
     
-    const response = await fetch(url)
+    console.log(`Trying MyMemory translation to ${targetCode}...`)
+    const response = await fetch(url, {
+      timeout: 10000 // 10 second timeout
+    } as any)
     
     if (response.ok) {
       const data = await response.json() as any
-      if (data.responseStatus === 200 && data.responseData) {
-        return {
-          success: true,
-          translatedText: data.responseData.translatedText || text,
-          provider: 'MyMemory'
+      console.log('MyMemory response:', data)
+      
+      if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
+        const translatedText = data.responseData.translatedText.trim()
+        // Check if the translation is meaningful (not just returning the original text)
+        if (translatedText && translatedText.toLowerCase() !== text.toLowerCase()) {
+          return {
+            success: true,
+            translatedText,
+            provider: 'MyMemory'
+          }
         }
       }
     }
     
-    throw new Error(`MyMemory API error: ${response.status}`)
+    throw new Error(`MyMemory API error: ${response.status} ${response.statusText}`)
   } catch (error) {
+    console.log('MyMemory translation failed:', error)
     return {
       success: false,
       translatedText: text,
@@ -209,31 +230,39 @@ export async function translateText(text: string, targetLanguage: string): Promi
     throw new Error('Target language is required for translation.')
   }
 
+  // Clean the input text - remove any existing translation prefixes to prevent duplication
+  let cleanText = text.trim()
+  const prefixPattern = /^\[.*?\s+translation\]:\s*/i
+  if (prefixPattern.test(cleanText)) {
+    cleanText = cleanText.replace(prefixPattern, '').trim()
+    console.log(`Removed existing translation prefix. Clean text: ${cleanText}`)
+  }
+
   // Step 1: Try dictionary translation for simple phrases
-  const dictionaryResult = tryDictionaryTranslation(text, targetLanguage)
+  const dictionaryResult = tryDictionaryTranslation(cleanText, targetLanguage)
   if (dictionaryResult) {
-    console.log(`Dictionary translation successful: ${text} -> ${dictionaryResult}`)
+    console.log(`Dictionary translation successful: ${cleanText} -> ${dictionaryResult}`)
     return dictionaryResult
   }
 
   // Step 2: Try free online translation services
-  console.log(`Attempting online translation: ${text} to ${targetLanguage}`)
+  console.log(`Attempting online translation: ${cleanText} to ${targetLanguage}`)
   
   // Try MyMemory first (usually faster)
-  const myMemoryResult = await tryMyMemoryTranslate(text, targetLanguage)
+  const myMemoryResult = await tryMyMemoryTranslate(cleanText, targetLanguage)
   if (myMemoryResult.success) {
     console.log(`MyMemory translation successful: ${myMemoryResult.translatedText}`)
     return myMemoryResult.translatedText
   }
   
   // Try LibreTranslate as backup
-  const libreResult = await tryLibreTranslate(text, targetLanguage)
+  const libreResult = await tryLibreTranslate(cleanText, targetLanguage)
   if (libreResult.success) {
     console.log(`LibreTranslate translation successful: ${libreResult.translatedText}`)
     return libreResult.translatedText
   }
   
-  // Step 3: Final fallback - return a helpful message
-  console.log(`All translation methods failed. Providing fallback message.`)
-  return `[${targetLanguage} translation]: ${text}`
+  // Step 3: Final fallback - provide error message instead of broken prefix
+  console.log(`All translation methods failed. Translation services may be unavailable.`)
+  throw new Error(`Translation services are currently unavailable. Please try again later or check your internet connection.`)
 }

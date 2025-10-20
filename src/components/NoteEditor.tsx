@@ -54,10 +54,25 @@ export function NoteEditor({ initial, onSave }: Props) {
       })
       const raw = await res.text()
       let data: any
-      try { data = JSON.parse(raw) } catch { alert('AI error: ' + raw); return }
-      if (data.translated) setContent(data.translated)
-      else if (data.error) alert(data.error)
-    } finally { setBusy(false) }
+      try { data = JSON.parse(raw) } catch { 
+        alert('Translation service error. Please try again later.'); 
+        return 
+      }
+      if (data.translated) {
+        setContent(data.translated)
+      }
+      else if (data.error) {
+        alert(`Translation error: ${data.error}`)
+      }
+      else {
+        alert('Translation failed. Please try again later.')
+      }
+    } catch (error) {
+      console.error('Translation error:', error)
+      alert('Translation service is currently unavailable. Please try again later.')
+    } finally { 
+      setBusy(false) 
+    }
   }
 
   async function summarizeContent() {

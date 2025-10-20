@@ -2,7 +2,7 @@ import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import type { ReactNode } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import UserMenu from '@/components/UserMenu'
+// import UserMenu from '@/components/UserMenu'
 
 export const metadata = {
   title: 'Notely — Next.js + Supabase Notes',
@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                   <a href="/notes" className="hover:underline">Notes</a>
                   <a href="/analytics" className="hover:underline">Analytics</a>
                   <ThemeToggle />
-                  <UserMenu />
+                  {/* <UserMenu /> */}
                 </nav>
               </div>
             </header>

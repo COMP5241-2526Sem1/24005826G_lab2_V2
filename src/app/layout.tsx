@@ -2,6 +2,7 @@ import './globals.css'
 import { ThemeProvider } from 'next-themes'
 import type { ReactNode } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { FloatingActionButton } from '@/components/FloatingActionButton'
 // import UserMenu from '@/components/UserMenu'
 
 export const metadata = {
@@ -74,6 +75,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                 </div>
               </div>
             </footer>
+            
+            {/* Global Floating Action Button */}
+            <FloatingActionButton />
           </div>
         </ThemeProvider>
       </body>
